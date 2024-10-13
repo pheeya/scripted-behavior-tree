@@ -1,13 +1,17 @@
 ﻿using CleverCrow.Fluid.BTs.Tasks;
 
-namespace CleverCrow.Fluid.BTs.TaskParents {
-    public class TaskRoot : TaskParentBase {
+namespace CleverCrow.Fluid.BTs.TaskParents
+{
+    public class TaskRoot : TaskParentBase
+    {
         public override string Name { get; set; } = "Root";
         protected override int MaxChildren { get; } = 1;
         public override string IconPath { get; } = $"{PACKAGE_ROOT}/DownArrow.png";
 
-        protected override TaskStatus OnUpdate () {
-            if (Children.Count == 0) {
+        protected override TaskStatus OnUpdate()
+        {
+            if (Children.Count == 0)
+            {
                 return TaskStatus.Success;
             }
 
@@ -15,7 +19,8 @@ namespace CleverCrow.Fluid.BTs.TaskParents {
             return child.Update();
         }
 
-        public override void End () {
+        public override void End()
+        {
         }
     }
 }

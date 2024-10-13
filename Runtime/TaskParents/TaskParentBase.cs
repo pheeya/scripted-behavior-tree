@@ -3,8 +3,10 @@ using CleverCrow.Fluid.BTs.Tasks;
 using CleverCrow.Fluid.BTs.Trees;
 using UnityEngine;
 
-namespace CleverCrow.Fluid.BTs.TaskParents {
-    public abstract class TaskParentBase : GenericTaskBase, ITaskParent {
+namespace CleverCrow.Fluid.BTs.TaskParents
+{
+    public abstract class TaskParentBase : GenericTaskBase, ITaskParent
+    {
         private int _lastTickCount;
 
         public IBehaviorTree ParentTree { get; set; }
@@ -19,52 +21,90 @@ namespace CleverCrow.Fluid.BTs.TaskParents {
 
         public GameObject Owner { get; set; }
 
-        public override TaskStatus Update () {
+        public override TaskStatus Update()
+        {
             base.Update();
             UpdateTicks();
 
             var status = OnUpdate();
             LastStatus = status;
-            if (status != TaskStatus.Continue) {
+            if (status != TaskStatus.Continue)
+            {
                 Reset();
             }
 
             return status;
         }
 
-        private void UpdateTicks () {
-            if (ParentTree == null) {
+        private void UpdateTicks()
+        {
+            if (ParentTree == null)
+            {
                 return;
             }
 
-            if (_lastTickCount != ParentTree.TickCount) {
+            if (_lastTickCount != ParentTree.TickCount)
+            {
                 Reset();
             }
 
             _lastTickCount = ParentTree.TickCount;
         }
 
-        public virtual void End () {
+        public virtual void End()
+        {
             throw new System.NotImplementedException();
         }
 
-        protected virtual TaskStatus OnUpdate () {
+        protected virtual TaskStatus OnUpdate()
+        {
             return TaskStatus.Success;
         }
 
-        public virtual void Reset () {
-        }
 
-        public virtual ITaskParent AddChild (ITask child) {
-            if (!child.Enabled) {
+        public virtual ITaskParent AddChild(ITask child)
+        {
+            if (!child.Enabled)
+            {
                 return this;
             }
 
-            if (Children.Count < MaxChildren || MaxChildren < 0) {
+            if (Children.Count < MaxChildren || MaxChildren < 0)
+            {
                 Children.Add(child);
             }
 
             return this;
         }
+
+        public override void OnFixedUpdate()
+        {
+            foreach (ITask child in Children)
+            {
+                child.OnFixedUpdate();
+            }
+        }
+        public override void OnDrawGizmos()
+        {
+            foreach (ITask child in Children)
+            {
+                child.OnDrawGizmos();
+            }
+        }
+        public override void OnEnable()
+        {
+            foreach (ITask child in Children)
+            { 
+                child.OnEnable();
+            }
+        }
+        public override void OnDisable()
+        {
+            foreach (ITask child in Children)
+            {
+                child.OnDisable();
+            }
+        }
+
     }
 }

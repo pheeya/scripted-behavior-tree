@@ -1,5 +1,7 @@
-namespace CleverCrow.Fluid.BTs.Tasks {
-    public abstract class GenericTaskBase {
+namespace CleverCrow.Fluid.BTs.Tasks
+{
+    public abstract class GenericTaskBase
+    {
         private EditorRuntimeUtilities _editorUtils;
         protected const string PACKAGE_ROOT = "ROOT/Editor/Icons/Tasks";
 
@@ -12,17 +14,27 @@ namespace CleverCrow.Fluid.BTs.Tasks {
         public virtual float IconPadding { get; }
         public bool HasBeenActive { get; private set; }
 
-        public EditorRuntimeUtilities EditorUtils => 
+        public EditorRuntimeUtilities EditorUtils =>
             _editorUtils ?? (_editorUtils = new EditorRuntimeUtilities());
 
-        public virtual TaskStatus Update () {
+        public virtual TaskStatus Update()
+        {
 #if UNITY_EDITOR
             EditorUtils.EventActive.Invoke();
 #endif
-            
+
             HasBeenActive = true;
 
             return TaskStatus.Success;
+        }
+
+
+        public virtual void OnFixedUpdate() { }
+        public virtual void OnEnable() { }
+        public virtual void OnDisable() { }
+        public virtual void OnDrawGizmos() { }
+        public virtual void Reset()
+        {
         }
     }
 }

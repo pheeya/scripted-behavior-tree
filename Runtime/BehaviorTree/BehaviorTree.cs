@@ -3,43 +3,67 @@ using CleverCrow.Fluid.BTs.TaskParents;
 using CleverCrow.Fluid.BTs.Tasks;
 using UnityEngine;
 
-namespace CleverCrow.Fluid.BTs.Trees {
-    public interface IBehaviorTree {
+namespace CleverCrow.Fluid.BTs.Trees
+{
+    public interface IBehaviorTree
+    {
         string Name { get; }
         TaskRoot Root { get; }
         int TickCount { get; }
-        
-        void AddActiveTask (ITask task);
-        void RemoveActiveTask (ITask task);
+
+        void AddActiveTask(ITask task);
+        void RemoveActiveTask(ITask task);
     }
-    
+
     [System.Serializable]
-    public class BehaviorTree : IBehaviorTree {
+    public class BehaviorTree : IBehaviorTree
+    {
         private readonly GameObject _owner;
         private readonly List<ITask> _tasks = new List<ITask>();
-        
+
         public int TickCount { get; private set; }
 
         public string Name { get; set; }
         public TaskRoot Root { get; } = new TaskRoot();
         public IReadOnlyList<ITask> ActiveTasks => _tasks;
 
-        public BehaviorTree (GameObject owner) {
+        public BehaviorTree(GameObject owner)
+        {
             _owner = owner;
             SyncNodes(Root);
         }
-        
-        public TaskStatus Tick () {
+
+        public TaskStatus Tick()
+        {
             var status = Root.Update();
-            if (status != TaskStatus.Continue) {
+            if (status != TaskStatus.Continue)
+            {
                 Reset();
             }
 
             return status;
         }
+        public void OnFixedUpdate()
+        {
+            Root.OnFixedUpdate();
+        }
 
-        public void Reset () {
-            foreach (var task in _tasks) {
+        public void OnDrawGizmos()
+        {
+            Root.OnDrawGizmos();
+        }
+        public void OnEnable()
+        {
+            Root.OnEnable();
+        }
+        public void OnDisable()
+        {
+            Root.OnDisable();
+        }
+        public void Reset()
+        {
+            foreach (var task in _tasks)
+            {
                 task.End();
             }
 
@@ -47,38 +71,45 @@ namespace CleverCrow.Fluid.BTs.Trees {
             TickCount++;
         }
 
-        public void AddNode (ITaskParent parent, ITask child) {
+        public void AddNode(ITaskParent parent, ITask child)
+        {
             parent.AddChild(child);
             child.ParentTree = this;
             child.Owner = _owner;
         }
 
-        public void Splice (ITaskParent parent, BehaviorTree tree) {
+        public void Splice(ITaskParent parent, BehaviorTree tree)
+        {
             parent.AddChild(tree.Root);
 
             SyncNodes(tree.Root);
         }
 
-        private void SyncNodes (ITaskParent taskParent) {
+        private void SyncNodes(ITaskParent taskParent)
+        {
             taskParent.Owner = _owner;
             taskParent.ParentTree = this;
-            
-            foreach (var child in taskParent.Children) {
+
+            foreach (var child in taskParent.Children)
+            {
                 child.Owner = _owner;
                 child.ParentTree = this;
 
                 var parent = child as ITaskParent;
-                if (parent != null) {
+                if (parent != null)
+                {
                     SyncNodes(parent);
                 }
             }
         }
-        
-        public void AddActiveTask (ITask task) {
+
+        public void AddActiveTask(ITask task)
+        {
             _tasks.Add(task);
         }
 
-        public void RemoveActiveTask (ITask task) {
+        public void RemoveActiveTask(ITask task)
+        {
             _tasks.Remove(task);
         }
     }
