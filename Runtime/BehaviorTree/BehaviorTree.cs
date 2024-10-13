@@ -27,6 +27,9 @@ namespace CleverCrow.Fluid.BTs.Trees
         public TaskRoot Root { get; } = new TaskRoot();
         public IReadOnlyList<ITask> ActiveTasks => _tasks;
 
+
+        
+
         public BehaviorTree(GameObject owner)
         {
             _owner = owner;

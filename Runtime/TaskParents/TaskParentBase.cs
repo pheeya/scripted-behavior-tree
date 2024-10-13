@@ -79,29 +79,37 @@ namespace CleverCrow.Fluid.BTs.TaskParents
 
         public override void OnFixedUpdate()
         {
+            if(LastStatus!= TaskStatus.Failure)
             foreach (ITask child in Children)
             {
+                if(child.LastStatus != TaskStatus.Failure)
                 child.OnFixedUpdate();
             }
         }
         public override void OnDrawGizmos()
         {
+            if(LastStatus!= TaskStatus.Failure)
             foreach (ITask child in Children)
             {
+                if(child.LastStatus != TaskStatus.Failure)
                 child.OnDrawGizmos();
             }
         }
         public override void OnEnable()
         {
+            if(LastStatus!= TaskStatus.Failure)
             foreach (ITask child in Children)
             { 
+                if(child.LastStatus != TaskStatus.Failure)
                 child.OnEnable();
             }
         }
         public override void OnDisable()
         {
+            if(LastStatus!= TaskStatus.Failure)
             foreach (ITask child in Children)
             {
+                if(child.LastStatus != TaskStatus.Failure)
                 child.OnDisable();
             }
         }
