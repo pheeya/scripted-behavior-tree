@@ -28,11 +28,13 @@ namespace CleverCrow.Fluid.BTs.TaskParents
 
             var status = OnUpdate();
             LastStatus = status;
+
             if (status != TaskStatus.Continue)
             {
                 Reset();
             }
 
+            ParentTree.OnTaskRan(this);
             return status;
         }
 
@@ -45,6 +47,7 @@ namespace CleverCrow.Fluid.BTs.TaskParents
 
             if (_lastTickCount != ParentTree.TickCount)
             {
+
                 Reset();
             }
 
@@ -77,42 +80,6 @@ namespace CleverCrow.Fluid.BTs.TaskParents
             return this;
         }
 
-        public override void OnFixedUpdate()
-        {
-            if(LastStatus!= TaskStatus.Failure)
-            foreach (ITask child in Children)
-            {
-                if(child.LastStatus != TaskStatus.Failure)
-                child.OnFixedUpdate();
-            }
-        }
-        public override void OnDrawGizmos()
-        {
-            if(LastStatus!= TaskStatus.Failure)
-            foreach (ITask child in Children)
-            {
-                if(child.LastStatus != TaskStatus.Failure)
-                child.OnDrawGizmos();
-            }
-        }
-        public override void OnEnable()
-        {
-            if(LastStatus!= TaskStatus.Failure)
-            foreach (ITask child in Children)
-            { 
-                if(child.LastStatus != TaskStatus.Failure)
-                child.OnEnable();
-            }
-        }
-        public override void OnDisable()
-        {
-            if(LastStatus!= TaskStatus.Failure)
-            foreach (ITask child in Children)
-            {
-                if(child.LastStatus != TaskStatus.Failure)
-                child.OnDisable();
-            }
-        }
-
+      
     }
 }

@@ -191,6 +191,7 @@ namespace CleverCrow.Fluid.BTs.Trees {
         }
 
         public BehaviorTree Build () {
+            _tree.OnBuilt();
             return _tree;
         }
     }
